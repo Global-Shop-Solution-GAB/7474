@@ -315,7 +315,7 @@ V.Local.dDate.Set(V.Ambient.Now)
 '				F.Intrinsic.Control.EndIf
 '			F.Intrinsic.Control.Next(V.Local.i1)
 '		F.Intrinsic.Control.EndIf
-		F.Data.DataTable.Close("dtMgr")
+'		F.Data.DataTable.Close("dtMgr")
 '	F.Intrinsic.Control.EndIf
 'F.Intrinsic.Control.ElseIf(V.Global.iMode,=,2)
 '	'Update GAB_7474_APRVL for approver
@@ -544,7 +544,11 @@ Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Name","Caption","Vendor"
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","DateDue","Caption","Due Date")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","DateOrder","Caption","Order Date")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Originator_Name","Caption","Originator Name")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Project","Caption","Project #")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","PEName","Caption","Project Engineers")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","PO","HeaderHAlignment","Center")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Project","HeaderHAlignment","Center")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","PEName","HeaderHAlignment","Center")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Name","HeaderHAlignment","Center")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Currency","HeaderHAlignment","Center")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Amount","HeaderHAlignment","Center")
@@ -562,6 +566,8 @@ Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Amount","DisplayCustomNu
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","DateDue","DisplayCustomDatetime","d")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","DateOrder","DisplayCustomDatetime","d")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","PO","MinWidth","70")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Project","MinWidth","50")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","PEName","MinWidth","350")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Name","MinWidth","250")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Currency","MinWidth","40")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Amount","MinWidth","110")
@@ -579,6 +585,8 @@ Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Reject","AllowEdit",Fals
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Preview","AllowEdit",False)
 
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","PO","HeaderFontBold",True)
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Project","HeaderFontBold",True)
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","PEName","HeaderFontBold",True)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Name","HeaderFontBold",True)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Currency","HeaderFontBold",True)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvDash","Amount","HeaderFontBold",True)
@@ -604,6 +612,8 @@ Gui.F_Approval.GsGCApproval.SetStyleFormatConditionProperty("gvDash","Approve","
 'Set the order of the columns for PO Line Detail
 v.Local.i1.Set(0)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PO","VisibleIndex",v.Local.i1.++)
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Project","VisibleIndex",v.Local.i1.++)
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PEName","VisibleIndex",v.Local.i1.++)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Line","VisibleIndex",v.Local.i1.++)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Part","VisibleIndex",v.Local.i1.++)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Loc","VisibleIndex",v.Local.i1.++)
@@ -629,6 +639,8 @@ Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","BIN","VisibleIndex",v.Loca
 
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PO","Visible",False)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","VENDOR","Visible",False)
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Project","Caption","Project #")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PEName","Caption","Project Engineers")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PO_LINE_TEXT","Caption","PO Line Text")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","VenCost","Caption","Vendor Cost")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","VenTax","Caption","Vendor Tax")
@@ -641,6 +653,8 @@ Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","LAST_PURCH_CoCost","Captio
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","QTY_ONHAND","Caption","Onhand Qty")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","QTY_ONORDER_PO","Caption","OnOrderPO Qty")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","BIN","Caption","Bin")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Project","HeaderHAlignment","Center")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PEName","HeaderHAlignment","Center")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Line","HeaderHAlignment","Center")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Description","HeaderHAlignment","Center")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PO_LINE_TEXT","HeaderHAlignment","Center")
@@ -673,6 +687,8 @@ Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","QTY_ONHAND","DisplayCustom
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","QTY_ONORDER_PO","DisplayCustomNumeric","##,###,##0.00")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Line","MinWidth","45")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Description","Width","200")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Project","Width","50")
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PEName","Width","350")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PO_LINE_TEXT","MinWidth","100")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Quantity","MinWidth","80")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","UM","MinWidth","45")
@@ -694,6 +710,8 @@ Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Line","Fixed","Left")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Description","Fixed","Left")
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Description","CellFontUnderline",True)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Description","CellForeColor",V.Color.Blue)
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Project","HeaderFontBold",True)
+Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PEName","HeaderFontBold",True)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Line","HeaderFontBold",True)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","Description","HeaderFontBold",True)
 Gui.F_Approval.GsGCApproval.SetColumnProperty("gvPO","PO_LINE_TEXT","HeaderFontBold",True)
@@ -749,6 +767,8 @@ F.Intrinsic.Control.ClearErrors
 V.Local.sError.Declare(String)
 
 V.Local.fLimit.Declare
+V.Local.fBegLimit.Declare
+V.Local.fEndLimit.Declare
 
 V.Local.i1.Declare
 
@@ -769,6 +789,7 @@ V.Local.sUser.Set(V.Caller.User)
 
 F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst","SELECT CURRENCY FROM V_COMPANY_OPT")
 V.Local.sCurrCo.Set(V.ODBC.conx!rst.FieldValTrim!currency)
+F.ODBC.conx!rst.Close
 
 Gui.F_Approval.GsGCApproval.visible(False)
 F.Intrinsic.Control.If(V.DataTable.dtDash.Exists)
@@ -780,11 +801,22 @@ F.Intrinsic.Control.If(V.DataTable.dtDash.Exists)
 	F.Data.DataTable.close("dtDash")
 F.Intrinsic.Control.EndIf
 
+F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst","select * from GAB_7474_DOL_LMT")
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF)
+	V.Passed.777777.Set(1)
+	F.Intrinsic.UI.Msgbox("Please setup dollar limits for Project Engineer first at Purchasing > Admin > Originator Maintenance (7474)","PO Approval (7474)")
+	F.Intrinsic.Control.CallSub(Unload)
+F.Intrinsic.Control.Else
+	V.Local.fBegLimit.Set(V.ODBC.conx!rst.FieldVal!Amount_Limit_Beg)
+	V.Local.fEndLimit.Set(V.ODBC.conx!rst.FieldVal!Amount_Limit_End)
+F.Intrinsic.Control.EndIf
+F.ODBC.conx!rst.Close
+
 'Load all POs according to the role
 'Management
 'F.Intrinsic.Control.If(V.Global.iMode,=,1)
 '	V.Local.sQuery.Set("SELECT purchase_order as PO, VENDOR as Vendor, ' ' as Name, ' ' as Currency, convert(Amount,SQL_FLOAT) as Amount, date_order as DateOrder, Date_Due as DateDue, Originator as Originator, ' ' As Originator_Name, Approver as Approve FROM GAB_7474_APRVL WHERE reviewer_2 = '' and reviewer_1 <> '' and reviewer_1 <> '*REJECT*' and reviewer_1 <> '*REVISE*'")
-V.Local.sQuery.Set("SELECT purchase_order as PO, VENDOR as Vendor, ' ' as Name, ' ' as Currency, convert(Amount,SQL_FLOAT) as Amount, date_order as DateOrder, Date_Due as DateDue, Originator as Originator, ' ' As Originator_Name, REVIEWER_1 as Approve FROM GAB_7474_APRVL WHERE reviewer_2 = '' and reviewer_1 <> '' and reviewer_1 <> '*REJECT*' and reviewer_1 <> '*REVISE*'")
+V.Local.sQuery.Set("SELECT purchase_order as PO, '' as Project, '' as PEName, VENDOR as Vendor, ' ' as Name, ' ' as Currency, convert(Amount,SQL_FLOAT) as Amount, date_order as DateOrder, Date_Due as DateDue, Originator as Originator, ' ' As Originator_Name, REVIEWER_1 as Approve FROM GAB_7474_APRVL WHERE reviewer_2 = '' and reviewer_1 <> '' and reviewer_1 <> '*REJECT*' and reviewer_1 <> '*REVISE*'")
 'Management
 'F.Intrinsic.Control.ElseIf(V.Global.iMode,=,2)
 ''	V.Local.sQuery.set("SELECT purchase_order as PO, VENDOR as Vendor, ' ' as Name, ' ' as Currency, convert(Amount,SQL_FLOAT) as Amount, date_order as DateOrder, Date_Due as DateDue, Originator as Originator, ' ' As Originator_Name, Approver as Approve FROM GAB_7474_APRVL WHERE reviewer_2 <> '' and reviewer_1 <> '' and approver = ''")
@@ -793,7 +825,7 @@ V.Local.sQuery.Set("SELECT purchase_order as PO, VENDOR as Vendor, ' ' as Name, 
 
 F.Data.DataTable.CreateFromSQL("dtDash","conx",V.Local.sQuery,True)
 
-V.Local.sQuery.Set("SELECT purchase_order as PO, VENDOR as Vendor, ' ' as Name, ' ' as Currency, convert(Amount,SQL_FLOAT) as Amount, date_order as DateOrder, Date_Due as DateDue, Originator as Originator, ' ' As Originator_Name, REVIEWER_1 as Approve FROM GAB_7474_APRVL WHERE reviewer_2 = '' and (reviewer_1 = '' or reviewer_1 = '*REVISE*') and Amount > 5000")
+F.Intrinsic.String.Build("SELECT purchase_order as PO, '' as Project, '' as PEName, VENDOR as Vendor, ' ' as Name, ' ' as Currency, convert(Amount,SQL_FLOAT) as Amount, date_order as DateOrder, Date_Due as DateDue, Originator as Originator, ' ' As Originator_Name, REVIEWER_1 as Approve FROM GAB_7474_APRVL WHERE reviewer_2 = '' and (reviewer_1 = '' or reviewer_1 = '*REVISE*') and Amount >= {0} and purchase_order in (select purchase_order from v_po_lines where rtrim(job) = '')", V.Local.fBegLimit, V.Local.sQuery)
 F.Data.DataTable.CreateFromSQL("dtDash1","conx",V.Local.sQuery,True)
 F.Data.DataTable.Merge("dtDash1","dtDash",True,1)
 F.Data.DataTable.Close("dtDash1")
@@ -811,24 +843,140 @@ F.Data.Dictionary.CreateFromSQL("dicVendor","conx","SELECT rtrim(Vendor), defaul
 F.Data.Dictionary.SetDefaultReturn("dicVendor",V.Local.sCurrCo)
 F.Data.DataTable.FillFromDictionary("dtDash","dicVendor","Vendor","Currency")
 F.Data.Dictionary.Close("dicVendor")
+''Get originator/buyer full name
+'F.Intrinsic.String.Build("select LTRIM(RTRIM(GS_USER)) AS Originator, RTRIM(LTRIM(FIRST_NAME)) + IF(RTRIM(LTRIM(MIDDLE_NAME)) = '', '', ' ' + RTRIM(LTRIM(MIDDLE_NAME))) + IF(RTRIM(LTRIM(LAST_NAME)) = '', '', ' ' + RTRIM(LTRIM(LAST_NAME))) AS FULL_NAME from USER_INFORMATION where (COMPANY = '{0}' or COMPANY = '');",v.Caller.CompanyCode,v.Local.sQuery)
+'F.Data.Dictionary.CreateFromSQL("dicOriginatorName","conCommon",v.Local.sQuery)
+'F.Data.Dictionary.SetDefaultReturn("dicOriginatorName","***NO NAME***")
+'F.Data.DataTable.FillFromDictionary("dtDash","dicOriginatorName","Originator","Originator_Name")
+'F.Data.Dictionary.Close("dicOriginatorName")
+
+'Get Project# and Project Engineers
+f.Data.DataTable.CreateFromSQL("dtProject","Conx","select PL.purchase_order, rtrim(JH.Project) as Project from v_po_lines PL left join v_job_header JH on PL.job = JH.job and PL.suffix = JH.suffix where PL.job <> '' group by PL.purchase_order, Project;",True)
+'1/Add empty column JSBuffer
+f.Data.DataTable.AddColumn("dtProject","JsBuffer","String","")
+'2/SetValueOnNextLine with key JS, the start of the group will be blank
+f.Data.DataTable.SetValueOnNextLine("dtProject","purchase_order","JsBuffer","purchase_order")
+'3/Based on blank start of the group, create an expression column
+f.Data.DataTable.AddExpressionColumn("dtProject","StepFormat","String","IIF(JsBuffer = '','@!@' + purchase_order + '#$%' + Project,Project)")
+'4/Get string from step 3
+f.Data.DataTable.ColumnToString("dtProject","StepFormat",v.Local.sRet)
+'5/Replace with delimiter " / "
+f.Intrinsic.String.Replace(v.Local.sRet,"*!*"," , ",v.Local.sRet)
+f.Intrinsic.String.Replace(v.Local.sRet," , @!@","@!@",v.Local.sRet)
+'f.Intrinsic.String.Replace(v.Local.sRet,"~#!",v.Local.sMark,v.Local.sRet)
+'6/Create final table dtSteps
+f.Data.DataTable.CreateFromString("dtProjectList",v.Local.sRet,"purchase_order*!*Project","String*!*String","#$%","@!@",True)
+f.Data.DataTable.DeleteRow("dtProjectList",0)
+'Delete dtProject
+f.Data.DataTable.Close("dtProject")
+'Match the JobSteps to the dtAll and dtOper based on Job+Suffix (JS)
+f.Data.Dictionary.CreateFromDataTable("dic","dtProjectList","purchase_order","Project")
+f.Data.Dictionary.SetDefaultReturn("dic","")
+f.Data.DataTable.FillFromDictionary("dtDash","dic","PO","Project")
+f.Data.Dictionary.Close("dic")
+'Delete dtProjectList
+f.Data.DataTable.Close("dtProjectList")
+
+'Get Project Name
+f.Data.DataTable.CreateFromSQL("dtProject","Conx","select PL.purchase_order, rtrim(GAB.userid) as PE, '' as PEName from v_po_lines PL left join v_job_header JH on PL.job = JH.job and PL.suffix = JH.suffix left join GAB_7474_PE_Project GAB on JH.Project = GAB.Project group by PL.purchase_order, PE;",True)
+
 'Get originator/buyer full name
 F.Intrinsic.String.Build("select LTRIM(RTRIM(GS_USER)) AS Originator, RTRIM(LTRIM(FIRST_NAME)) + IF(RTRIM(LTRIM(MIDDLE_NAME)) = '', '', ' ' + RTRIM(LTRIM(MIDDLE_NAME))) + IF(RTRIM(LTRIM(LAST_NAME)) = '', '', ' ' + RTRIM(LTRIM(LAST_NAME))) AS FULL_NAME from USER_INFORMATION where (COMPANY = '{0}' or COMPANY = '');",v.Caller.CompanyCode,v.Local.sQuery)
 F.Data.Dictionary.CreateFromSQL("dicOriginatorName","conCommon",v.Local.sQuery)
 F.Data.Dictionary.SetDefaultReturn("dicOriginatorName","***NO NAME***")
 F.Data.DataTable.FillFromDictionary("dtDash","dicOriginatorName","Originator","Originator_Name")
+F.Data.DataTable.FillFromDictionary("dtProject","dicOriginatorName","PE","PEName")
 F.Data.Dictionary.Close("dicOriginatorName")
+
+'1/Add empty column JSBuffer
+f.Data.DataTable.AddColumn("dtProject","JsBuffer","String","")
+'2/SetValueOnNextLine with key JS, the start of the group will be blank
+f.Data.DataTable.SetValueOnNextLine("dtProject","purchase_order","JsBuffer","purchase_order")
+'3/Based on blank start of the group, create an expression column
+f.Data.DataTable.AddExpressionColumn("dtProject","StepFormat","String","IIF(JsBuffer = '','@!@' + purchase_order + '#$%' + PEName,PEName)")
+'4/Get string from step 3
+f.Data.DataTable.ColumnToString("dtProject","StepFormat",v.Local.sRet)
+'5/Replace with delimiter " / "
+f.Intrinsic.String.Replace(v.Local.sRet,"*!*"," , ",v.Local.sRet)
+f.Intrinsic.String.Replace(v.Local.sRet," , @!@","@!@",v.Local.sRet)
+'f.Intrinsic.String.Replace(v.Local.sRet,"~#!",v.Local.sMark,v.Local.sRet)
+'6/Create final table dtSteps
+f.Data.DataTable.CreateFromString("dtProjectList",v.Local.sRet,"purchase_order*!*PEName","String*!*String","#$%","@!@",True)
+f.Data.DataTable.DeleteRow("dtProjectList",0)
+'Delete dtProject
+f.Data.DataTable.Close("dtProject")
+'Match the JobSteps to the dtAll and dtOper based on Job+Suffix (JS)
+f.Data.Dictionary.CreateFromDataTable("dic","dtProjectList","purchase_order","PEName")
+f.Data.Dictionary.SetDefaultReturn("dic","")
+f.Data.DataTable.FillFromDictionary("dtDash","dic","PO","PEName")
+f.Data.Dictionary.Close("dic")
+'Delete dtProjectList
+f.Data.DataTable.Close("dtProjectList")
 
 
 'F.Intrinsic.Control.If(V.Global.iMode,=,1)
 '	V.Local.sQuery.Set("select P1.purchase_order as PO, P2.record_no as Line, Part, P2.Location as Loc, Description, P2.qty_order as Quantity, P2.um_purchasing as UM, (1-P2.discount)*P2.exchange_cost2 as VenCost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE P1.reviewer_2 = '' and P1.reviewer_1 <> '' and P1.reviewer_1 <> '*REJECT*' and P1.reviewer_1 <> '*REVISE*' order by PO, Line")
 '	F.Intrinsic.String.Build("select P1.purchase_order as PO, P2.record_no as Line, Part, P2.Location as Loc, RTRIM(Description) as Description, P2.qty_order as Quantity, P2.um_purchasing as UM, If(exchange_curr<>'{0}',if(exchange_curr<>'',((1-P2.discount)*P2.exchange_cost2),0.000000),0.000000) as Vencost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE P1.reviewer_2 = '' and P1.reviewer_1 <> '' and P1.reviewer_1 <> '*REJECT*' and P1.reviewer_1 <> '*REVISE*' order by PO, Line",V.Local.sCurrCo.Trim,V.Local.sQuery)
-	F.Intrinsic.String.Build("select P1.purchase_order as PO, P2.record_no as Line, Part, P2.Location as Loc, RTRIM(Description) as Description, P2.qty_order as Quantity, P2.um_purchasing as UM, If(exchange_curr<>'{0}',if(exchange_curr<>'',((1-P2.discount)*P2.exchange_cost2),0.000000),0.000000) as Vencost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt, P2.VENDOR from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE P1.reviewer_2 = '' and P1.reviewer_1 <> '' and P1.reviewer_1 <> '*REJECT*' and P1.reviewer_1 <> '*REVISE*' order by PO, Line",V.Local.sCurrCo.Trim,V.Local.sQuery)	
+	F.Intrinsic.String.Build("select P1.purchase_order as PO, P1.purchase_order+P2.Record_No as POLine, '' as Project, '' as PEName, P2.record_no as Line, Part, P2.Location as Loc, RTRIM(Description) as Description, P2.qty_order as Quantity, P2.um_purchasing as UM, If(exchange_curr<>'{0}',if(exchange_curr<>'',((1-P2.discount)*P2.exchange_cost2),0.000000),0.000000) as Vencost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt, P2.VENDOR from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE reviewer_2 = '' and reviewer_1 <> '' and reviewer_1 <> '*REJECT*' and reviewer_1 <> '*REVISE*' order by PO, Line",V.Local.sCurrCo.Trim,V.Local.sQuery)	
 'F.Intrinsic.Control.ElseIf(V.Global.iMode,=,2)
 ''	V.Local.sQuery.Set("select P1.purchase_order as PO, P2.record_no as Line, Part, P2.Location as Loc, Description, P2.qty_order as Quantity, P2.um_purchasing as UM, (1-P2.discount)*P2.exchange_cost2 as VenCost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE P1.reviewer_2 <> '' and P1.reviewer_1 <> '' and P1.approver = '' order by PO, Line")
 ''	F.Intrinsic.String.Build("select P1.purchase_order as PO, P2.record_no as Line, Part, P2.Location as Loc, RTRIM(Description) as Description, P2.qty_order as Quantity, P2.um_purchasing as UM, If(exchange_curr<>'{0}',if(exchange_curr<>'',((1-P2.discount)*P2.exchange_cost2),0.000000),0.000000) as Vencost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE P1.reviewer_2 <> '' and P1.reviewer_1 <> '' and P1.approver = '' order by PO, Line",V.Local.sCurrCo.Trim,V.Local.sQuery)
 '	F.Intrinsic.String.Build("select P1.purchase_order as PO, P2.record_no as Line, Part, P2.Location as Loc, RTRIM(Description) as Description, P2.qty_order as Quantity, P2.um_purchasing as UM, If(exchange_curr<>'{0}',if(exchange_curr<>'',((1-P2.discount)*P2.exchange_cost2),0.000000),0.000000) as Vencost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt, P2.VENDOR from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE P1.reviewer_2 <> '' and P1.reviewer_1 <> '' and P1.approver = '' order by PO, Line",V.Local.sCurrCo.Trim,V.Local.sQuery)
 'F.Intrinsic.Control.EndIf
 F.Data.DataTable.CreateFromSQL("dtDash$Line","conx",V.Local.sQuery,True)
+
+F.Intrinsic.String.Build("select P1.purchase_order as PO, P1.purchase_order+P2.Record_No as POLine, '' as Project, '' as PEName, P2.record_no as Line, Part, P2.Location as Loc, RTRIM(Description) as Description, P2.qty_order as Quantity, P2.um_purchasing as UM, If(exchange_curr<>'{0}',if(exchange_curr<>'',((1-P2.discount)*P2.exchange_cost2),0.000000),0.000000) as Vencost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt, P2.VENDOR from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE reviewer_2 = '' and (reviewer_1 = '' or reviewer_1 = '*REVISE*') and Amount >= {1} and P1.purchase_order in (select purchase_order from v_po_lines where rtrim(job) = '') order by PO, Line", V.Local.sCurrCo.Trim, V.Local.fBegLimit, V.Local.sQuery)
+F.Data.DataTable.CreateFromSQL("dtDash$Line1","conx",V.Local.sQuery,True)
+F.Data.DataTable.Merge("dtDash$Line1","dtDash$Line",True,1)
+F.Data.DataTable.Close("dtDash$Line1")
+
+'Get Project# and Project Engineers
+f.Data.DataTable.CreateFromSQL("dtProject","Conx","select PL.purchase_order+PL.record_no as POLine, rtrim(JH.Project) as Project from v_po_lines PL left join v_job_header JH on PL.job = JH.job and PL.suffix = JH.suffix group by POLine, Project;",True)
+
+'Match the JobSteps to the dtAll and dtOper based on Job+Suffix (JS)
+f.Data.Dictionary.CreateFromDataTable("dic","dtProject","POLine","Project")
+f.Data.Dictionary.SetDefaultReturn("dic","")
+f.Data.DataTable.FillFromDictionary("dtDash$Line","dic","POLine","Project")
+f.Data.Dictionary.Close("dic")
+'Delete dtProjectList
+f.Data.DataTable.Close("dtProject")
+
+'Get Project Name
+f.Data.DataTable.CreateFromSQL("dtProject","Conx","select PL.purchase_order+PL.record_no as POLine, rtrim(GAB.userid) as PE, '' as PEName from v_po_lines PL left join v_job_header JH on PL.job = JH.job and PL.suffix = JH.suffix left join GAB_7474_PE_Project GAB on JH.Project = GAB.Project group by POLine, PE;",True)
+
+'Get originator/buyer full name
+F.Intrinsic.String.Build("select LTRIM(RTRIM(GS_USER)) AS Originator, RTRIM(LTRIM(FIRST_NAME)) + IF(RTRIM(LTRIM(MIDDLE_NAME)) = '', '', ' ' + RTRIM(LTRIM(MIDDLE_NAME))) + IF(RTRIM(LTRIM(LAST_NAME)) = '', '', ' ' + RTRIM(LTRIM(LAST_NAME))) AS FULL_NAME from USER_INFORMATION where (COMPANY = '{0}' or COMPANY = '');",v.Caller.CompanyCode,v.Local.sQuery)
+F.Data.Dictionary.CreateFromSQL("dicOriginatorName","conCommon",v.Local.sQuery)
+F.Data.Dictionary.SetDefaultReturn("dicOriginatorName","***NO NAME***")
+F.Data.DataTable.FillFromDictionary("dtDash","dicOriginatorName","Originator","Originator_Name")
+F.Data.DataTable.FillFromDictionary("dtProject","dicOriginatorName","PE","PEName")
+F.Data.Dictionary.Close("dicOriginatorName")
+
+'1/Add empty column JSBuffer
+f.Data.DataTable.AddColumn("dtProject","JsBuffer","String","")
+'2/SetValueOnNextLine with key JS, the start of the group will be blank
+f.Data.DataTable.SetValueOnNextLine("dtProject","POLine","JsBuffer","POLine")
+'3/Based on blank start of the group, create an expression column
+f.Data.DataTable.AddExpressionColumn("dtProject","StepFormat","String","IIF(JsBuffer = '','@!@' + POLine + '#$%' + PEName,PEName)")
+'4/Get string from step 3
+f.Data.DataTable.ColumnToString("dtProject","StepFormat",v.Local.sRet)
+'5/Replace with delimiter " / "
+f.Intrinsic.String.Replace(v.Local.sRet,"*!*"," , ",v.Local.sRet)
+f.Intrinsic.String.Replace(v.Local.sRet," , @!@","@!@",v.Local.sRet)
+'f.Intrinsic.String.Replace(v.Local.sRet,"~#!",v.Local.sMark,v.Local.sRet)
+'6/Create final table dtSteps
+f.Data.DataTable.CreateFromString("dtProjectList",v.Local.sRet,"POLine*!*PEName","String*!*String","#$%","@!@",True)
+f.Data.DataTable.DeleteRow("dtProjectList",0)
+'Delete dtProject
+f.Data.DataTable.Close("dtProject")
+'Match the JobSteps to the dtAll and dtOper based on Job+Suffix (JS)
+f.Data.Dictionary.CreateFromDataTable("dic","dtProjectList","POLine","PEName")
+f.Data.Dictionary.SetDefaultReturn("dic","")
+f.Data.DataTable.FillFromDictionary("dtDash$Line","dic","POLine","PEName")
+f.Data.Dictionary.Close("dic")
+'Delete dtProjectList
+f.Data.DataTable.Close("dtProjectList")
+F.Data.DataTable.RemoveColumn("dtDash$Line","POLine")
 
 'Get the lowest & highest PO Number
 F.Data.DataView.Create("dtDash","dvDashTemp",22,"","PO")
@@ -1305,5 +1453,5 @@ Program.Sub.Comments.Start
 ${$0$}$PO Approval (Approve/Reject)$}$MHERTANTO$}$11/13/2019 1:14:41 PM$}$False
 ${$3$}$0$}$$}$0$}$-1$}$$}$12:00:00 AM$}$This will allow a user to view all non-approved POs. They can approve one, multiple, or all POs. If the PO has a value greater than the users approval limit, they will not be able to approve that PO.
 ${$5$}$2.0.0.0$}$2
-${$6$}$dyunus$}$20240320162850202$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0TDVI4Qa5ZrXhDIokJEC3tplS1PmWkDAYasK8norXRn5s=
+${$6$}$dyunus$}$20240321160523578$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0TDVI4Qa5ZrXj2H6hbg+EbBl0R+jLPKiXD4tibANQ6ZlU=
 Program.Sub.Comments.End
