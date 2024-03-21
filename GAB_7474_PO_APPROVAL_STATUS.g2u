@@ -174,8 +174,8 @@ Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","Vendor","Visible",False)
 Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","Name","Caption","Vendor")
 Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","PODate","Caption","PO Date")
 Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","DueDate","Caption","Due Date")
-Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","Reviewer1","Caption","Supervisor")
-Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","Reviewer2","Caption","Manager")
+Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","Reviewer1","Caption","Project Engineer")
+Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","Reviewer2","Caption","CFO/President")
 Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","PO","HeaderHAlignment","Center")
 Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","Name","HeaderHAlignment","Center")
 Gui.F_POStatus.GsGCPending.SetColumnProperty("gvPen","PODate","HeaderHAlignment","Center")
@@ -328,5 +328,5 @@ Program.Sub.Comments.Start
 ${$0$}$PO Approval Status Check$}$MHERTANTO$}$20/6/2017 10:59:40 PM$}$False
 ${$3$}$0$}$$}$0$}$-1$}$$}$12:00:00 AM$}$This program displays the status of PO requiring approval. The user can identify which PO has been approved and which PO has not been approved and user can print PO directly from here.
 ${$5$}$2.0.0.0$}$2
-${$6$}$dyunus$}$20240314131151668$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0TsQ8KcKnknQRr3ieKKw9PvfR52lGySxPdErmyj+5SjfE=
+${$6$}$dyunus$}$20240321160739138$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0TDVI4Qa5ZrXj2H6hbg+EbBnBB3tcGaZVRSgcP5RYmbvg=
 Program.Sub.Comments.End
