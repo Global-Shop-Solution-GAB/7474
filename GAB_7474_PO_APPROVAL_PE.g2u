@@ -259,9 +259,9 @@ F.Intrinsic.Control.EndIf
 F.ODBC.conx!rst.Close
 
 'Update GAB_7474_APRVL for reviewer_1
-F.Intrinsic.Control.If(V.Local.fAmount,>=,V.Local.fBegLimit)
-F.Intrinsic.Control.AndIf(V.Local.fAmount,<=,V.Local.fEndLimit)
+F.Intrinsic.Control.If(V.Local.fAmount,<=,V.Local.fEndLimit)
 	F.Intrinsic.String.Build("update GAB_7474_APRVL set reviewer_1 = '{0}', reviewed_1_date = '{1}', approver = '{0}', approved_date = '{1}' where purchase_order = '{2}' and date_order = '{3}'",V.Local.sUser.Trim,V.Local.dDate.PervasiveDate,V.DataTable.dtDash(V.Args.RowIndex).PO!FieldValTrim,V.DataTable.dtDash(V.Args.RowIndex).DateOrder!FieldValPervasiveDate,V.Local.sSql)
+	F.ODBC.Connection!conx.Execute(V.Local.sSQL)
 	
 	'Get Sender's User ID
 	Function.Global.Security.GetUserID(V.Caller.User,V.Caller.CompanyCode,V.Local.iUserS)
@@ -286,6 +286,7 @@ F.Intrinsic.Control.AndIf(V.Local.fAmount,<=,V.Local.fEndLimit)
 
 F.Intrinsic.Control.Else
 	F.Intrinsic.String.Build("update GAB_7474_APRVL set reviewer_1 = '{0}', reviewed_1_date = '{1}' where purchase_order = '{2}' and date_order = '{3}'",V.Local.sUser.Trim,V.Local.dDate.PervasiveDate,V.DataTable.dtDash(V.Args.RowIndex).PO!FieldValTrim,V.DataTable.dtDash(V.Args.RowIndex).DateOrder!FieldValPervasiveDate,V.Local.sSql)
+	F.ODBC.Connection!conx.Execute(V.Local.sSQL)
 	
 	'Email manager to notify reviewed PO
 	V.Local.sSql.Set("SELECT GS_USER as UserID FROM GAB_7474_APRVRS WHERE CFO = 1 or PRESIDENT = 1")
@@ -316,13 +317,12 @@ F.Intrinsic.Control.Else
 	F.Intrinsic.Control.EndIf
 	F.Data.DataTable.Close("dtMgr")
 F.Intrinsic.Control.EndIf
-F.ODBC.Connection!conx.Execute(V.Local.sSql)
 
 F.Intrinsic.Control.ExitSub
 
 F.Intrinsic.Control.Label("Approve_Err")
 F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
-	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_SPV.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_PE.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
 	F.Intrinsic.UI.Msgbox(V.Local.sError)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
@@ -400,7 +400,7 @@ F.Intrinsic.Control.ExitSub
 
 F.Intrinsic.Control.Label("cmdsend_click_Err")
 F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
-	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_SPV.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_PE.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
 	F.Intrinsic.UI.Msgbox(V.Local.sError)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
@@ -445,7 +445,7 @@ F.Intrinsic.Control.ExitSub
 
 F.Intrinsic.Control.Label("Reject_Err")
 F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
-	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_SPV.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_PE.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
 	F.Intrinsic.UI.Msgbox(V.Local.sError)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
@@ -681,7 +681,7 @@ F.Intrinsic.Control.ExitSub
 
 F.Intrinsic.Control.Label("gsfgStyle_Err")
 F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
-	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_SPV.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_PE.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
 	F.Intrinsic.UI.Msgbox(V.Local.sError)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
@@ -753,7 +753,7 @@ F.Data.DataTable.Close("dtWO")
 F.Intrinsic.Control.If(V.Local.sWO1.Trim,=,"")
 	F.Intrinsic.String.Build("SELECT purchase_order as PO, '' as Project, '' as PEName, VENDOR as Vendor, ' ' as Name, ' ' as Currency, convert(Amount,SQL_FLOAT) as Amount, date_order as DateOrder, Date_Due as DateDue,  Originator as Originator, ' ' As Originator_Name, REVIEWER_1 as Approve FROM GAB_7474_APRVL WHERE Purchase_order = '{0}'", V.Local.sWO1, V.Local.sQuery)
 F.Intrinsic.Control.Else
-	F.Intrinsic.String.Build("SELECT purchase_order as PO, '' as Project, '' as PEName, VENDOR as Vendor, ' ' as Name, ' ' as Currency, convert(Amount,SQL_FLOAT) as Amount, date_order as DateOrder, Date_Due as DateDue,  Originator as Originator, ' ' As Originator_Name, REVIEWER_1 as Approve FROM GAB_7474_APRVL WHERE (reviewer_1 = '' or reviewer_1 = '*REVISE*') and purchase_order in (select purchase_order from v_po_lines where {0} group by purchase_order)", V.Local.sWO1, V.Local.sQuery)
+	F.Intrinsic.String.Build("SELECT purchase_order as PO, '' as Project, '' as PEName, VENDOR as Vendor, ' ' as Name, ' ' as Currency, convert(Amount,SQL_FLOAT) as Amount, date_order as DateOrder, Date_Due as DateDue,  Originator as Originator, ' ' As Originator_Name, REVIEWER_1 as Approve FROM GAB_7474_APRVL WHERE (reviewer_1 = '' or reviewer_1 = '*REVISE*') and Approver = '' and purchase_order in (select purchase_order from v_po_lines where {0} group by purchase_order)", V.Local.sWO1, V.Local.sQuery)
 F.Intrinsic.Control.EndIf
 
 F.Data.DataTable.CreateFromSQL("dtDash","conx",V.Local.sQuery,True)
@@ -841,7 +841,7 @@ f.Data.DataTable.Close("dtProjectList")
 F.Intrinsic.Control.If(V.Local.sWO1.Trim,=,"")
 	F.Intrinsic.String.Build("select P1.purchase_order as PO, P1.purchase_order+P2.Record_No as POLine, '' as Project, '' as PEName, P2.record_no as Line, Part, P2.Location as Loc, RTRIM(Description) as Description, P2.qty_order as Quantity, P2.um_purchasing as UM, If(exchange_curr<>'{0}',if(exchange_curr<>'',((1-P2.discount)*P2.exchange_cost2),0.000000),0.000000) as VenCost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt, P2.VENDOR from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE P1.purchase_order = '{1}'",V.Local.sCurrCo.Trim,V.Local.sWO1,V.Local.sQuery)
 F.Intrinsic.Control.Else
-	F.Intrinsic.String.Build("select P1.purchase_order as PO, P1.purchase_order+P2.Record_No as POLine, '' as Project, '' as PEName, P2.record_no as Line, Part, P2.Location as Loc, RTRIM(Description) as Description, P2.qty_order as Quantity, P2.um_purchasing as UM, If(exchange_curr<>'{0}',if(exchange_curr<>'',((1-P2.discount)*P2.exchange_cost2),0.000000),0.000000) as VenCost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt, P2.VENDOR from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE (P1.reviewer_1 = '' or P1.reviewer_1 = '*REVISE*') and {1} order by PO, Line",V.Local.sCurrCo.Trim,V.Local.sWO1,V.Local.sQuery)
+	F.Intrinsic.String.Build("select P1.purchase_order as PO, P1.purchase_order+P2.Record_No as POLine, '' as Project, '' as PEName, P2.record_no as Line, Part, P2.Location as Loc, RTRIM(Description) as Description, P2.qty_order as Quantity, P2.um_purchasing as UM, If(exchange_curr<>'{0}',if(exchange_curr<>'',((1-P2.discount)*P2.exchange_cost2),0.000000),0.000000) as VenCost, P2.ven_tax_per_piece as VenTax, P2.qty_order*(((1-P2.discount)*P2.exchange_cost2)+P2.ven_tax_per_piece) as VenExt, (1-P2.discount)*P2.cost_6_dec as CoCost, P2.pur_tax_per_piece as CoTax, P2.qty_order*(((1-P2.discount)*P2.cost_6_dec)+P2.pur_tax_per_piece) as CoExt, P2.VENDOR from GAB_7474_APRVL P1 left join v_po_lines P2 on P1.purchase_order = P2.purchase_order WHERE (P1.reviewer_1 = '' or P1.reviewer_1 = '*REVISE*') and Approver = '' and {1} order by PO, Line",V.Local.sCurrCo.Trim,V.Local.sWO1,V.Local.sQuery)
 F.Intrinsic.Control.EndIf
 
 F.Data.DataTable.CreateFromSQL("dtDash$dtLine","conx",V.Local.sQuery,True)
@@ -1009,7 +1009,7 @@ F.Intrinsic.Control.ExitSub
 
 F.Intrinsic.Control.Label("LoadApprovalList_Err")
 F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
-	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_SPV.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_PE.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
 	F.Intrinsic.UI.Msgbox(V.Local.sError)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
@@ -1030,7 +1030,7 @@ F.Intrinsic.Control.ExitSub
 
 F.Intrinsic.Control.Label("RefreshGrid_Err")
 F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
-	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_SPV.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_PE.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
 	F.Intrinsic.UI.Msgbox(V.Local.sError)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
@@ -1139,7 +1139,7 @@ F.Intrinsic.Control.ExitSub
 
 F.Intrinsic.Control.Label("GridApproveReject_Err")
 F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
-	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_SPV.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_PE.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
 	F.Intrinsic.UI.Msgbox(V.Local.sError)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
@@ -1232,7 +1232,7 @@ f.Intrinsic.Control.ExitSub
 
 F.Intrinsic.Control.Label("cmdPOHistory_Click_Err")
 F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
-	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_SPV.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_PE.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
 	F.Intrinsic.UI.Msgbox(V.Local.sError)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
@@ -1257,7 +1257,7 @@ F.Intrinsic.Control.ExitSub
 
 F.Intrinsic.Control.Label("CheckGabProjectManagement_Err")
 F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
-	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_SPV.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_PE.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
 	F.Intrinsic.UI.Msgbox(V.Local.sError)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
@@ -1344,7 +1344,7 @@ F.Intrinsic.Control.EndIf
 
 F.Intrinsic.Control.Label("GsGCApproval_MouseDown_Err")
 F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
-	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_SPV.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.String.Concat("Project: GAB_7474_PO_APPROVAL_PE.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
 	F.Intrinsic.UI.Msgbox(V.Local.sError)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
@@ -1354,5 +1354,5 @@ Program.Sub.Comments.Start
 ${$0$}$PO Approval (Approve/Reject)$}$MHERTANTO$}$11/13/2019 1:13:29 PM$}$False
 ${$3$}$0$}$$}$0$}$-1$}$$}$12:00:00 AM$}$This will allow a user to view all non-approved POs. They can approve one, multiple, or all POs. If the PO has a value greater than the users approval limit, they will not be able to approve that PO.
 ${$5$}$2.0.0.0$}$2
-${$6$}$dyunus$}$20240321160422902$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0TDVI4Qa5ZrXj2H6hbg+EbButEpKtkg5ijAucyu6rpWuY=
+${$6$}$dyunus$}$20240322164836843$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0TDVI4Qa5ZrXget0txtV9APY9b6qnHLH2BiaW5AZeq/ak=
 Program.Sub.Comments.End
