@@ -86,6 +86,16 @@ F.Intrinsic.Control.SelectCase(V.Caller.Hook)
 	'PO Receipt - PO Selected Hook Post Process
 	F.Intrinsic.Control.Case(15021)
 		F.Intrinsic.Control.CallSub(Hook15021)
+		
+	'Added by TDjohan - BEGIN (03/26/2022)
+	'PO Header Save Button Pre-Hook
+	F.Intrinsic.Control.Case(16870)
+		F.Intrinsic.Control.CallSub(Hook16870)
+		
+	'PO Header - Save Button Post Hook)
+	F.Intrinsic.Control.Case(16880)
+		F.Intrinsic.Control.CallSub(Hook16880)
+	'Added by TDjohan - END (03/26/2022)	
 
 F.Intrinsic.Control.EndSelect
 
@@ -334,7 +344,7 @@ F.Intrinsic.Control.Else
 F.Intrinsic.Control.EndIf
 F.ODBC.conx!rstSum.Close
 
-F.Intrinsic.String.Build("SELECT CAST(sum(qty_order*(((1-discount)*cost_6_dec)+pur_tax_per_piece))AS FLOAT) as SumPO FROM V_PO_LINES WHERE PURCHASE_ORDER='{0}'",V.Global.sPO,V.Global.sSQL)
+F.Intrinsic.String.Build("SELECT CAST(sum(qty_order*(((1-discount)*cost_6_dec)+IF(rtrim(tax_code)<>'',pur_tax_per_piece,0)))AS FLOAT) as SumPO FROM V_PO_LINES WHERE PURCHASE_ORDER='{0}'",V.Global.sPO,V.Global.sSQL)
 F.ODBC.Connection!conx.OpenRecordsetRO("rstSum",V.Global.sSQL)
 F.Intrinsic.Control.If(V.ODBC.conx!rstSum.EOF,=,True)
 	V.Local.fSum2.Set(0)
@@ -623,6 +633,295 @@ F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
 	F.Intrinsic.Control.CallSub(Unload)
 Function.Intrinsic.Control.EndIf
 Program.Sub.Format_Date_Vend.End
+
+Program.Sub.Hook16870.Start
+F.Intrinsic.Control.SetErrorHandler("Hook16870_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+'Added by MH - 28 Apr 2016
+V.Local.sSql.Declare
+v.Local.sDate.Declare
+V.Local.sFileName.Declare
+V.Local.sFile.Declare
+V.Local.bFileExists.Declare
+v.Local.fAmount.Declare
+
+F.Intrinsic.String.Format(V.Ambient.Now,"YYYY-MM-DD HH:NN:SS",V.Local.sDate)
+
+'Check if the PO does not have any lines after exiting PO header
+V.Global.sPO.Set(V.Passed.000008.Trim)
+F.Intrinsic.String.LPad(V.Global.sPO,"0",7,V.Global.sPO)
+
+F.Intrinsic.Control.If(V.Global.sPO.Trim,<>,"0000000")
+	F.Intrinsic.Control.CallSub(Sum_po_amount)
+	v.Local.fAmount.Set(v.Args.Amount2)
+	
+	F.Intrinsic.Control.CallSub(PE_Amount_Limit_Beg)
+	
+	'F.Intrinsic.Control.CallSub(GetPODate)
+
+	'F.Intrinsic.String.Concat("SELECT * FROM GAB_5326_APRVL WHERE purchase_order = '",V.Global.sPO.Trim,"' AND M_TYPE = 2",V.Global.sSQL)
+	'F.Intrinsic.String.Build("SELECT * FROM GAB_7474_APRVL WHERE purchase_order = '{0}' and date_order = '{1}'",V.Global.sPO.Trim,V.Global.datePO.PervasiveDate,V.Global.sSQL)
+	F.Intrinsic.String.Build("SELECT * FROM GAB_7474_APRVL WHERE purchase_order = '{0}'",V.Global.sPO.Trim,V.Global.sSQL)
+	F.ODBC.Connection!conx.OpenLocalRecordsetRW("rst",V.Global.sSql)
+	F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,False)
+		F.Intrinsic.String.Build("SELECT VENDOR, DATE_ORDER, DATE_DUE FROM V_PO_HEADER WHERE PURCHASE_ORDER = '{0}'",V.Global.sPO.Trim,V.Local.sSql)
+		F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstPO",V.Local.sSql)
+		F.Intrinsic.Control.If(V.ODBC.conx!rstPO.EOF,=,True)
+			F.ODBC.conx!rst.Delete
+		'Update PO amount in approval table
+		F.Intrinsic.Control.Else
+			F.Intrinsic.Control.If(v.Local.fAmount,<>,V.ODBC.conx!rst.FieldValFloat!Amount)
+				F.Intrinsic.String.Format(V.Ambient.Now,"YYYY-MM-DD HH:NN:SS",V.Local.sDate)
+				
+				F.Intrinsic.Control.If(V.Caller.Switches,=,"N")
+'					F.Intrinsic.Control.CallSub(Sum_po_amount)
+					F.ODBC.conx!rst.Set!DATE_ORDER(V.ODBC.conx!rstPO.FieldVal!DATE_ORDER)
+					F.ODBC.conx!rst.Set!DATE_DUE(V.ODBC.conx!rstPO.FieldVal!DATE_DUE)
+					F.ODBC.conx!rst.Set!AMOUNT(V.Local.fAmount)
+					F.Intrinsic.Control.If(v.Local.fAmount,<,v.Global.fLimit)
+						F.ODBC.conx!rst.Set!reviewer_1("")
+						F.ODBC.conx!rst.Set!reviewed_1_date("1900-01-01 00:00:00")
+						F.ODBC.conx!rst.Set!reviewer_2("")
+						F.ODBC.conx!rst.Set!reviewed_2_date("1900-01-01 00:00:00")
+						F.ODBC.conx!rst.Set!approver(V.Caller.User)
+						F.ODBC.conx!rst.Set!approved_date(V.Local.sDate)
+						F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000047,"HIDE",0)
+					F.Intrinsic.Control.Else
+						F.ODBC.conx!rst.Set!reviewer_1("")
+						F.ODBC.conx!rst.Set!reviewed_1_date("1900-01-01 00:00:00")
+						F.ODBC.conx!rst.Set!reviewer_2("")
+						F.ODBC.conx!rst.Set!reviewed_2_date("1900-01-01 00:00:00")
+						F.ODBC.conx!rst.Set!approver("")
+						F.ODBC.conx!rst.Set!approved_date("1900-01-01 00:00:00")
+						F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000047,"HIDE",1)
+					F.Intrinsic.Control.EndIf
+					F.ODBC.conx!rst.Update
+				F.Intrinsic.Control.Else
+					F.ODBC.conx!rst.Set!DATE_ORDER(V.ODBC.conx!rstPO.FieldVal!DATE_ORDER)
+					F.ODBC.conx!rst.Set!DATE_DUE(V.ODBC.conx!rstPO.FieldVal!DATE_DUE)
+					F.ODBC.conx!rst.Set!AMOUNT(V.Local.fAmount)
+					F.ODBC.conx!rst.Update
+				F.Intrinsic.Control.EndIf
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.EndIf
+		F.ODBC.conx!rstPO.Close
+	F.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("SELECT VENDOR, DATE_ORDER, DATE_DUE FROM V_PO_HEADER WHERE PURCHASE_ORDER = '{0}'",V.Global.sPO.Trim,V.Local.sSql)
+		F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstPO",V.Local.sSql)
+		F.Intrinsic.Control.If(V.ODBC.conx!rstPO.EOF,=,False)
+			'TDjohan - BEGIN - 07/25/2023 - Don't insert into the PO Approval table if the PO Header is opened in View Mode
+			F.Intrinsic.Control.If(V.Caller.Switches,<>,"V")
+			'TDjohan - END - 07/25/2023
+'				F.Intrinsic.Control.CallSub(Sum_po_amount)
+				F.Intrinsic.String.Format(V.Ambient.Now,"YYYY-MM-DD HH:NN:SS",V.Local.sDate)
+				
+				F.ODBC.conx!rst.AddNew
+				F.ODBC.conx!rst.Set!purchase_order(V.Global.sPO.Trim)
+				F.ODBC.conx!rst.Set!Vendor(V.ODBC.conx!rstPO.FieldValTrim!VENDOR)
+				F.ODBC.conx!rst.Set!DATE_ORDER(V.ODBC.conx!rstPO.FieldVal!DATE_ORDER)
+				F.ODBC.conx!rst.Set!DATE_DUE(V.ODBC.conx!rstPO.FieldVal!DATE_DUE)
+				F.ODBC.conx!rst.Set!Originator(V.Caller.User)
+				F.ODBC.conx!rst.Set!AMOUNT(V.Local.fAmount)
+				F.Intrinsic.Control.If(v.Local.fAmount,<,v.Global.fLimit)
+					F.ODBC.conx!rst.Set!reviewer_1("")
+					F.ODBC.conx!rst.Set!reviewed_1_date("1900-01-01 00:00:00")
+					F.ODBC.conx!rst.Set!reviewer_2("")
+					F.ODBC.conx!rst.Set!reviewed_2_date("1900-01-01 00:00:00")
+					F.ODBC.conx!rst.Set!approver(V.Caller.User)
+					F.ODBC.conx!rst.Set!approved_date(V.Local.sDate)
+					F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000047,"HIDE",0)
+				F.Intrinsic.Control.Else
+					F.ODBC.conx!rst.Set!reviewer_1("")
+					F.ODBC.conx!rst.Set!reviewed_1_date("1900-01-01 00:00:00")
+					F.ODBC.conx!rst.Set!reviewer_2("")
+					F.ODBC.conx!rst.Set!reviewed_2_date("1900-01-01 00:00:00")
+					F.ODBC.conx!rst.Set!approver("")
+					F.ODBC.conx!rst.Set!approved_date("1900-01-01 00:00:00")
+					F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000047,"HIDE",1)
+				F.Intrinsic.Control.EndIf
+				F.ODBC.conx!rst.Update
+			'TDjohan - BEGIN - 07/25/2023 - Don't insert into the PO Approval table if the PO Header is opened in View Mode
+			F.Intrinsic.Control.EndIf
+			'TDjohan - END - 07/25/2023
+		F.Intrinsic.Control.EndIf
+		F.ODBC.conx!rstPO.Close
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rst.Close
+F.Intrinsic.Control.EndIf
+
+'PO No to be used in Hook 16880 - Save Button Post Hook
+F.Intrinsic.Control.If(V.Global.sPO.Trim,<>,"0000000")
+	F.Intrinsic.String.Format(V.Ambient.Date,"YYYYMMDD",V.Local.sDate)
+	F.Intrinsic.String.Concat(V.System.Temp,"\GSS\INA_",V.Caller.User,"_",V.Local.sDate,"_PO_NUM.txt",V.Local.sFileName)
+	F.Intrinsic.File.Exists(V.Local.sFileName,v.Local.bFileExists)
+	f.Intrinsic.Control.If(v.Local.bFileExists)
+		f.Intrinsic.File.DeleteFile(v.Local.sFileName)
+	f.Intrinsic.Control.EndIf
+	f.Intrinsic.String.Concat(v.Global.sPO.Trim,"*!*",v.Args.Amount,v.Local.sFile)
+	F.Intrinsic.File.String2File(V.Local.sFileName,V.Local.sFile)
+F.Intrinsic.Control.EndIf
+'Added by TDjohan - 03/26/2022 - END
+
+F.Intrinsic.Control.ExitSub
+
+
+F.Intrinsic.Control.Label("Hook16870_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GAB_5326_PO_APPROVAL_REQ.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+Program.Sub.Hook16870.End
+
+Program.Sub.Hook16880.Start
+F.Intrinsic.Control.SetErrorHandler("Hook16880_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+v.Local.sSql.Declare
+v.Local.sDate.Declare
+V.Local.sFileName.Declare
+V.Local.sFile.Declare
+V.Local.bFileExists.Declare
+V.Local.sPO.Declare
+V.Local.fBeforeAmtPO.Declare
+v.Local.fAmount.Declare
+
+F.Intrinsic.String.Format(V.Ambient.Date,"YYYYMMDD",V.Local.sDate)
+F.Intrinsic.String.Concat(V.System.Temp,"\GSS\INA_",V.Caller.User,"_",V.Local.sDate,"_PO_NUM.txt",V.Local.sFileName)
+F.Intrinsic.File.Exists(V.Local.sFileName,v.Local.bFileExists)
+f.Intrinsic.Control.If(v.Local.bFileExists)
+	F.Intrinsic.File.File2String(V.Local.sFileName,V.Local.sFile)
+	F.Intrinsic.Control.If(v.Local.sFile.Trim,<>,"")
+		F.Intrinsic.String.Split(v.Local.sFile,"*!*",v.Local.sFile)
+		v.Local.sPO.Set(v.Local.sFile(0).Trim)
+		v.Local.fBeforeAmtPO.Set(v.Local.sFile(1).Float)
+	F.Intrinsic.Control.Else
+		v.Local.sPO.Set("0000000")
+		v.Local.fBeforeAmtPO.Set(0)
+	F.Intrinsic.Control.EndIf
+f.Intrinsic.Control.Else
+	v.Local.sPO.Set("0000000")
+	v.Local.fBeforeAmtPO.Set(0)
+f.Intrinsic.Control.EndIf
+
+F.Intrinsic.String.Format(V.Ambient.Now,"YYYY-MM-DD HH:NN:SS",V.Local.sDate)
+
+V.Global.sPO.Set(v.Local.sPO.Trim)
+F.Intrinsic.String.LPad(V.Global.sPO,"0",7,V.Global.sPO)
+
+F.Intrinsic.Control.If(V.Global.sPO.Trim,<>,"0000000")
+	F.Intrinsic.Control.CallSub(Sum_po_amount)
+	v.Local.fAmount.Set(v.Args.Amount2)
+	
+	F.Intrinsic.Control.CallSub(PE_Amount_Limit_Beg)
+	
+	'F.Intrinsic.Control.CallSub(GetPODate)
+
+	'F.Intrinsic.String.Concat("SELECT * FROM GAB_5326_APRVL WHERE purchase_order = '",V.Global.sPO.Trim,"' AND M_TYPE = 2",V.Global.sSQL)
+	'F.Intrinsic.String.Build("SELECT * FROM GAB_7474_APRVL WHERE purchase_order = '{0}' and date_order = '{1}'",V.Global.sPO.Trim,V.Global.datePO.PervasiveDate,V.Global.sSQL)
+	F.Intrinsic.String.Build("SELECT * FROM GAB_7474_APRVL WHERE purchase_order = '{0}'",V.Global.sPO.Trim,V.Global.sSQL)
+	F.ODBC.Connection!conx.OpenLocalRecordsetRW("rst",V.Global.sSql)
+	F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,False)
+		F.Intrinsic.String.Build("SELECT VENDOR, DATE_ORDER, DATE_DUE FROM V_PO_HEADER WHERE PURCHASE_ORDER = '{0}'",V.Global.sPO.Trim,V.Local.sSql)
+		F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstPO",V.Local.sSql)
+		F.Intrinsic.Control.If(V.ODBC.conx!rstPO.EOF,=,True)
+			F.ODBC.conx!rst.Delete
+		'Update PO amount in approval table
+		F.Intrinsic.Control.Else
+			F.Intrinsic.Control.If(v.Local.fAmount,<>,V.ODBC.conx!rst.FieldValFloat!Amount)
+				F.Intrinsic.String.Format(V.Ambient.Now,"YYYY-MM-DD HH:NN:SS",V.Local.sDate)
+				
+				F.Intrinsic.Control.If(V.Caller.Switches,=,"N")
+'					F.Intrinsic.Control.CallSub(Sum_po_amount)
+					F.ODBC.conx!rst.Set!DATE_ORDER(V.ODBC.conx!rstPO.FieldVal!DATE_ORDER)
+					F.ODBC.conx!rst.Set!DATE_DUE(V.ODBC.conx!rstPO.FieldVal!DATE_DUE)
+					F.ODBC.conx!rst.Set!AMOUNT(V.Local.fAmount)
+					F.Intrinsic.Control.If(v.Local.fAmount,<,v.Global.fLimit)
+						F.ODBC.conx!rst.Set!reviewer_1("")
+						F.ODBC.conx!rst.Set!reviewed_1_date("1900-01-01 00:00:00")
+						F.ODBC.conx!rst.Set!reviewer_2("")
+						F.ODBC.conx!rst.Set!reviewed_2_date("1900-01-01 00:00:00")
+						F.ODBC.conx!rst.Set!approver(V.Caller.User)
+						F.ODBC.conx!rst.Set!approved_date(V.Local.sDate)
+						F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000047,"HIDE",0)
+					F.Intrinsic.Control.Else
+						F.ODBC.conx!rst.Set!reviewer_1("")
+						F.ODBC.conx!rst.Set!reviewed_1_date("1900-01-01 00:00:00")
+						F.ODBC.conx!rst.Set!reviewer_2("")
+						F.ODBC.conx!rst.Set!reviewed_2_date("1900-01-01 00:00:00")
+						F.ODBC.conx!rst.Set!approver("")
+						F.ODBC.conx!rst.Set!approved_date("1900-01-01 00:00:00")
+						F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000047,"HIDE",1)
+					F.Intrinsic.Control.EndIf
+					F.ODBC.conx!rst.Update
+				F.Intrinsic.Control.Else
+					F.ODBC.conx!rst.Set!DATE_ORDER(V.ODBC.conx!rstPO.FieldVal!DATE_ORDER)
+					F.ODBC.conx!rst.Set!DATE_DUE(V.ODBC.conx!rstPO.FieldVal!DATE_DUE)
+					F.ODBC.conx!rst.Set!AMOUNT(V.Local.fAmount)
+					F.ODBC.conx!rst.Update
+				F.Intrinsic.Control.EndIf
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.EndIf
+		F.ODBC.conx!rstPO.Close
+	F.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("SELECT VENDOR, DATE_ORDER, DATE_DUE FROM V_PO_HEADER WHERE PURCHASE_ORDER = '{0}'",V.Global.sPO.Trim,V.Local.sSql)
+		F.ODBC.Connection!conx.OpenLocalRecordsetRO("rstPO",V.Local.sSql)
+		F.Intrinsic.Control.If(V.ODBC.conx!rstPO.EOF,=,False)
+			'TDjohan - BEGIN - 07/25/2023 - Don't insert into the PO Approval table if the PO Header is opened in View Mode
+			F.Intrinsic.Control.If(V.Caller.Switches,<>,"V")
+			'TDjohan - END - 07/25/2023
+'				F.Intrinsic.Control.CallSub(Sum_po_amount)
+				F.Intrinsic.String.Format(V.Ambient.Now,"YYYY-MM-DD HH:NN:SS",V.Local.sDate)
+				
+				F.ODBC.conx!rst.AddNew
+				F.ODBC.conx!rst.Set!purchase_order(V.Global.sPO.Trim)
+				F.ODBC.conx!rst.Set!Vendor(V.ODBC.conx!rstPO.FieldValTrim!VENDOR)
+				F.ODBC.conx!rst.Set!DATE_ORDER(V.ODBC.conx!rstPO.FieldVal!DATE_ORDER)
+				F.ODBC.conx!rst.Set!DATE_DUE(V.ODBC.conx!rstPO.FieldVal!DATE_DUE)
+				F.ODBC.conx!rst.Set!Originator(V.Caller.User)
+				F.ODBC.conx!rst.Set!AMOUNT(V.Local.fAmount)
+				F.Intrinsic.Control.If(v.Local.fAmount,<,v.Global.fLimit)
+					F.ODBC.conx!rst.Set!reviewer_1("")
+					F.ODBC.conx!rst.Set!reviewed_1_date("1900-01-01 00:00:00")
+					F.ODBC.conx!rst.Set!reviewer_2("")
+					F.ODBC.conx!rst.Set!reviewed_2_date("1900-01-01 00:00:00")
+					F.ODBC.conx!rst.Set!approver(V.Caller.User)
+					F.ODBC.conx!rst.Set!approved_date(V.Local.sDate)
+					F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000047,"HIDE",0)
+				F.Intrinsic.Control.Else
+					F.ODBC.conx!rst.Set!reviewer_1("")
+					F.ODBC.conx!rst.Set!reviewed_1_date("1900-01-01 00:00:00")
+					F.ODBC.conx!rst.Set!reviewer_2("")
+					F.ODBC.conx!rst.Set!reviewed_2_date("1900-01-01 00:00:00")
+					F.ODBC.conx!rst.Set!approver("")
+					F.ODBC.conx!rst.Set!approved_date("1900-01-01 00:00:00")
+					F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000047,"HIDE",1)
+				F.Intrinsic.Control.EndIf
+				F.ODBC.conx!rst.Update
+			'TDjohan - BEGIN - 07/25/2023 - Don't insert into the PO Approval table if the PO Header is opened in View Mode
+			F.Intrinsic.Control.EndIf
+			'TDjohan - END - 07/25/2023
+		F.Intrinsic.Control.EndIf
+		F.ODBC.conx!rstPO.Close
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rst.Close
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Hook16880_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GAB_5326_PO_APPROVAL_REQ.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+Program.Sub.Hook16880.End
 
 Program.Sub.Hook16090.Start
 F.Intrinsic.Control.SetErrorHandler("Hook16090_Err")
@@ -1307,6 +1606,7 @@ F.Intrinsic.Control.If(V.Global.sPO.Trim,<>,"0000000")
 			F.Intrinsic.Control.If(V.Caller.Switches,<>,"V")
 			'TDjohan - END - 07/25/2023
 '				F.Intrinsic.Control.CallSub(Sum_po_amount)
+				F.Intrinsic.String.Format(V.Ambient.Now,"YYYY-MM-DD HH:NN:SS",V.Local.sDate)
 				
 				F.ODBC.conx!rst.AddNew
 				F.ODBC.conx!rst.Set!purchase_order(V.Global.sPO.Trim)
@@ -1879,6 +2179,6 @@ Program.Sub.Comments.Start
 ${$0$}$PO Approval Requirement Check$}$MHERTANTO$}$9/16/2019 1:51:53 PM$}$False
 ${$3$}$0$}$$}$0$}$-1$}$$}$12:00:00 AM$}$This will allow a user to view all non-approved POs. They can approve one, multiple, or all POs. If the PO has a value greater than the users approval limit, they will not be able to approve that PO.
 ${$5$}$2.0.0.0$}$2
-${$6$}$tdjohan$}$20240320143751245$}$8rAQhOSvlohpQhMDm1j544LwmwXnRbkhV2MZj9pTsXmXY8mjSHKJSxkb5fRdEdKV+tzBehNK00U=
+${$6$}$dyunus$}$20240322174252065$}$xZ6SHi8g7O0Qsxe6AiO2NH3PnOKQRy0TDVI4Qa5ZrXhVO7PpIFXByVk7c3YMzY8bthbZCsAxxCg=
 Program.Sub.Comments.End
 
